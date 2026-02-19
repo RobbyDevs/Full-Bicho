@@ -8,9 +8,9 @@
   
 </p>
 
-<h1>
+<h2>
   Stacks
-</h1>
+</h2>
 <h3>
   <p>- Angular (Front-end)</p>
   <p>- Spring Boot (Back-end)</p>
@@ -19,17 +19,17 @@
 </h3>
 </div>
 
-<h1>
+<h2>
   Arquitetura
-</h1>
+</h2>
 <h3>
   <p>- MVC (Model/View/Controller) Doc: https://www.geeksforgeeks.org/system-design/mvc-design-pattern/ </p>
 </h3>
 </div>
 
-<h1>
+<h2>
   DEVOPS
-</h1>
+</h2>
 <h3>
   <p>- CI (GitHub Actions) </p>
 </h3>
