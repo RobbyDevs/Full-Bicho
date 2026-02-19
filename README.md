@@ -4,13 +4,17 @@
 </div>
 <div>
 
+<p>
+  
+</p>
+
 <h1>
   Stacks
 </h1>
 <h3>
-  - Angular (Front-end)
-  - Spring Boot (Back-end)
-  - MySQL (Banco de dados)
-  - Bootstrap (UI e estilização)
+  <p>- Angular (Front-end)</p>
+  <p>- Spring Boot (Back-end)</p>
+  <p>- MySQL (Banco de dados)</p>
+  <p>- Bootstrap (UI e estilização)</p>
 </h3>
 </div>
