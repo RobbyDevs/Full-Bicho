@@ -6,6 +6,6 @@ public class Soma {
         int b = 1;
         int ans = a+b;
 
-        System.out.println(ans);
+       return 4;
     }
 }
