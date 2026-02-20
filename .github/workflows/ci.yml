@@ -1,0 +1,34 @@
+name: CI - Angular + Spring
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # BACKEND
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Backend
+        working-directory: ./backend
+        run: echo "Backend build placeholder"
+
+      # FRONTEND
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: echo "Frontend build placeholder"
