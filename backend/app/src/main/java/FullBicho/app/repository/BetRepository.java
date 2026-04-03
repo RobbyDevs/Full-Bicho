@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface BetRepository extends JpaRepository<Bet, Long> {
 
-    List<Bet> findByDraw_drawIdAndStatus(Long draw_id, BetStatus status);
+    List<Bet> findByDraw_drawIdAndStatus(Long drawId, BetStatus status);
 }

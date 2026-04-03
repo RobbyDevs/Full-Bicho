@@ -21,6 +21,7 @@ public class UserController {
     @PostMapping("/save")
     public ResponseEntity<String> save(@RequestBody UserRequestDTO userDTO){
         try {
+
             String message = userService.save(userDTO);
             return new ResponseEntity<>(message, HttpStatus.CREATED);
         }

@@ -13,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BetRequestDTO {
 
-    private Long user_id;
+    private Long userId;
     private Long drawId;
 
-    private User user;
-    private Draw draw;
+    //private User user;
+    //private Draw draw;
 
     private BetType type;
     private Long chosenNumber;

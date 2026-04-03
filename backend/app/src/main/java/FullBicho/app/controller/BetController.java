@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("app/bet")
+@RequestMapping("app/user/bet")
 public class BetController {
     @Autowired
     private BetService betService;
@@ -27,11 +27,23 @@ public class BetController {
 
 
 
-    @PostMapping("/placebet")
-    public ResponseEntity<String> save(@RequestBody BetRequestDTO betRequest){
+    @PostMapping("/placeBet")
+    public ResponseEntity<String> placeBet(@RequestBody BetRequestDTO betRequest){
         try {
 
             String message = betService.placeBet(betRequest);
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/admin/autoPlaceBet")
+    public ResponseEntity<String> autoPlaceBet(@RequestBody BetRequestDTO betRequest){
+        try {
+
+            String message = betService.autoPlaceBet(betRequest);
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
         catch (Exception e){

@@ -14,4 +14,12 @@ public class WalletService {
     public void credit(User user, double amount) {
         user.setBalance(user.getBalance() + amount);
     }
+
+    public void debit(User user, double amount) {
+        if (user.getBalance() < amount ||  user.getBalance() <= 0) {
+            throw new IllegalStateException("SALDO INSUFICIENTE!!");
+        }
+
+        user.setBalance(user.getBalance() - amount);
+    }
 }

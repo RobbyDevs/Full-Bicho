@@ -20,7 +20,7 @@ public class RoundDigit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long round_digit_id;
+    private Long roundDigitId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "drawId",nullable = false)

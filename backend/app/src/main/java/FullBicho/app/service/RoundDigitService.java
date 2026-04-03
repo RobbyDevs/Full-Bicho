@@ -52,6 +52,7 @@ public class RoundDigitService {
             return true;
         }
         catch (Exception e){
+
             throw new RuntimeException(e.getMessage());
         }
     }

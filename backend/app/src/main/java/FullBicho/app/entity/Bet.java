@@ -14,10 +14,10 @@ public class Bet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bet_id;
+    private Long betId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "userId",nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DrawService {
@@ -71,31 +72,61 @@ public class DrawService {
     @Transactional
     public String startDraw(Long currentDrow_id){
 
-        //busca draw-----------------
-        Draw draw = drawRepository.findById(currentDrow_id).orElseThrow(() -> new RuntimeException("Sorteio Não Encontrado!"));
+            //busca draw-----------------
+            Optional<Draw> tempDraw = drawRepository.findById(currentDrow_id);
 
-        //validar se OPEN------------
-        if (!draw.isOpen()) {throw new IllegalStateException("Sorteio Já Encerrado!");}
+            if (tempDraw.isEmpty()) {
+                throw new RuntimeException("Sorteio Não Encontrado!");
+            }
 
-
-        //GERAR DIGITS----------
-        roundDigitService.generateForDraw(draw);
-        System.out.println("vals gerados");
-
-        //Buscar Digits ----------------
-        List<RoundDigit> results = roundDigitRepository.findByDraw_drawId(currentDrow_id);
-
-        //Buscar bets ----------------
-        List<Bet> bets = betRepository.findByDraw_drawIdAndStatus(currentDrow_id, BetStatus.PENDING);
-
-        //PROCESSAR BETS ----------------
-        betProcessService.processBets(bets, results);
-
-        draw.setStatus(DrawStatus.CLOSED);
-        drawRepository.save(draw);
+            Draw  draw = tempDraw.get();
 
 
-        return  "DRAW INICIADO E FINALIZADO!!!";
+            //validar se OPEN------------
+            if (!draw.isOpen()) {
+                throw new IllegalStateException("Sorteio Já Encerrado!");
+            }
+
+
+            //GERAR DIGITS----------
+            try {
+                roundDigitService.generateForDraw(draw);
+
+            }
+            catch (Exception e){
+                throw new RuntimeException(e.getMessage());
+            }
+
+
+            //Buscar Digits ----------------
+
+            List<RoundDigit> results = roundDigitRepository.findByDraw_drawId(currentDrow_id);
+
+            if (results.isEmpty()) {
+                throw new RuntimeException("ERRO AO GERAR RODADAS!!");
+            }
+
+            //Buscar bets ----------------
+            List<Bet> bets = betRepository.findByDraw_drawIdAndStatus(currentDrow_id, BetStatus.PENDING);
+
+            if  (bets.isEmpty()) {
+                throw new RuntimeException("NENHUMA BET ALOCADA!!!!");
+            }
+            //PROCESSAR BETS ----------------
+
+            try {
+                betProcessService.processBets(bets, results);
+            }
+            catch (Exception e){
+                throw new RuntimeException(e.getMessage());
+            }
+
+            draw.setStatus(DrawStatus.CLOSED);
+            drawRepository.save(draw);
+
+
+            return  "DRAW INICIADO E FINALIZADO!!!";
+
     }
 
 

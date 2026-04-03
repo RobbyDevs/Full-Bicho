@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 
 public class UserRequestDTO {
-    private Long user_id;
-    private String username;
+    private Long userId;//AutoIncrement
 
+    private String username;//RequestBody
+    private String password;//RequestBody
+    private String email;//RequestBody
 
-    private String password;
-    private String email;
-    private final Double balance = 1000.00;
+    private final Double balance = 1000.00;//Default
 
 }

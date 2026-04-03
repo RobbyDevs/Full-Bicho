@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 
@@ -31,11 +32,8 @@ public class BetProcessService {
 
 
     private Long getGroup(Long number) {
-
         Long tens = number % 100;
-
         Long group = (tens - 1) / 4 + 1;
-
         return group == 0 ? 25 : group;
     }
 
@@ -48,7 +46,7 @@ public class BetProcessService {
         switch (bet.getType()) {
 
             case THOUSANDS:
-                return resultNumber == chosen;
+                return Objects.equals(resultNumber, chosen);
 
             case HUNDREDS:
                 return resultNumber % 1000 == chosen;
@@ -89,33 +87,32 @@ public class BetProcessService {
 
 
     public void processBets(List<Bet> bets, List<RoundDigit> results) {
+        try {
 
-        for (Bet bet : bets) {
+            for (Bet bet : bets) {
+                List<RoundDigit> winners = getWinningDigits(bet, results);
 
-            List<RoundDigit> winners = getWinningDigits(bet, results);
+                if (!winners.isEmpty()) {
+                    double totalPayout = 0.0;
 
-            if (!winners.isEmpty()) {
+                    for (RoundDigit digit : winners) {
+                        double payout = calculatePayout(bet);
 
-                double totalPayout = 0.0;
+                        //Marcando como GANHO
+                        bet.markAsWin(digit.getDigit(), digit.getPosition(), payout);
 
-                for (RoundDigit digit : winners) {
+                        totalPayout += payout;
+                    }
 
-                    double payout = calculatePayout(bet);
+                    walletService.credit(bet.getUser(), totalPayout);
 
-                    bet.markAsWin(
-                            digit.getDigit(),
-                            digit.getPosition(),
-                            payout
-                    );
-
-                    totalPayout += payout;
+                } else {
+                    bet.markAsLoss();
                 }
-
-                walletService.credit(bet.getUser(), totalPayout);
-
-            } else {
-                bet.markAsLoss();
             }
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
         }
     }
 }

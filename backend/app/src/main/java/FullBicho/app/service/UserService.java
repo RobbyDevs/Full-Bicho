@@ -66,12 +66,12 @@ public class UserService {
     // UPDATE
     public String update(UserRequestDTO userDTO) {
         try {
-            if (userDTO.getUser_id() == null || userDTO.getUser_id().toString().isBlank()) {
+            if (userDTO.getUserId() == null || userDTO.getUserId().toString().isBlank()) {
                 throw new IllegalArgumentException("ID não pode ser nulo.");
             }
 
 
-            Optional<User> existingUser = tempRepository.findById(userDTO.getUser_id());
+            Optional<User> existingUser = tempRepository.findById(userDTO.getUserId());
 
             if (existingUser.isEmpty()) {
                 throw new RuntimeException("Usuário não encontrado para atualização.");
