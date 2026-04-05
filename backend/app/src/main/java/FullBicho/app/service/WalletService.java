@@ -11,11 +11,11 @@ public class WalletService {
     @Autowired
     UserService userService;
 
-    public void credit(User user, double amount) {
+    public void creditValue(User user, double amount) {
         user.setBalance(user.getBalance() + amount);
     }
 
-    public void debit(User user, double amount) {
+    public void debitValue(User user, double amount) {
         if (user.getBalance() < amount ||  user.getBalance() <= 0) {
             throw new IllegalStateException("SALDO INSUFICIENTE!!");
         }

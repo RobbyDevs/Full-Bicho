@@ -1,7 +1,7 @@
 package FullBicho.app.entity;
 
 
-import FullBicho.app.util.DrawStatus;
+import FullBicho.app.util.items.DrawStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

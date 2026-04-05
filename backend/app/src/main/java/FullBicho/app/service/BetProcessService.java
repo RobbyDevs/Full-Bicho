@@ -104,7 +104,7 @@ public class BetProcessService {
                         totalPayout += payout;
                     }
 
-                    walletService.credit(bet.getUser(), totalPayout);
+                    walletService.creditValue(bet.getUser(), totalPayout);
 
                 } else {
                     bet.markAsLoss();

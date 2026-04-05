@@ -1,8 +1,6 @@
 package FullBicho.app.dto;
 
-import FullBicho.app.entity.Draw;
-import FullBicho.app.entity.User;
-import FullBicho.app.util.BetType;
+import FullBicho.app.util.items.BetType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.processing.Pattern;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +17,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    private String username;
 
+    @Column(nullable = false, unique = true, length = 11)
+    private String cpf;
 
-    private String password;
-    private String email;
+    private String username; //RequestBody
+    private String password; //RequestBody
+    private String email; //RequestBody
+
     private Double balance = 1000.00;
 
 

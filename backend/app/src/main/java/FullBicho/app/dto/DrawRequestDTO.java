@@ -1,6 +1,6 @@
 package FullBicho.app.dto;
 
-import FullBicho.app.util.DrawStatus;
+import FullBicho.app.util.items.DrawStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;

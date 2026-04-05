@@ -1,4 +1,4 @@
-package FullBicho.app.util;
+package FullBicho.app.util.items;
 
 public enum DigitPosition {
     HEAD,

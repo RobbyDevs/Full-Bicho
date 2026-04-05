@@ -1,20 +1,30 @@
 package FullBicho.app.dto;
 
+import FullBicho.app.util.items.InputTreatment;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.br.CPF;
 
 @AllArgsConstructor
-@Getter
+
 @Setter
-
+@Getter
 public class UserRequestDTO {
-    private Long userId;//AutoIncrement
 
-    private String username;//RequestBody
-    private String password;//RequestBody
-    private String email;//RequestBody
+    @NotBlank(message = "NOME DE USUÁRIO OBRIGATÓRIO!!!")
+    private String username;
+    @NotBlank(message = "SENHA OBRIGATÓRIA!!!")
+    private String password;
+    @NotBlank(message = "EMAIL OBRIGATÓRIO!!!")
+    @Email(message = "EMAIL INVÁLIDO")
+    private String email;
+    @NotBlank(message = "CPF INVÁLIDO!!!")
+    //@CPF (message = "CPF INVÁLIDO!!")
+    private String cpf;
 
-    private final Double balance = 1000.00;//Default
+    private final Double balance = 1000.00;
 
 }

@@ -1,7 +1,7 @@
 package FullBicho.app.entity;
 
 
-import FullBicho.app.util.DigitPosition;
+import FullBicho.app.util.items.DigitPosition;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package FullBicho.app.service;
 
 
-import FullBicho.app.util.DigitPosition;
+import FullBicho.app.util.items.DigitPosition;
 import FullBicho.app.entity.Draw;
 import FullBicho.app.entity.RoundDigit;
 import FullBicho.app.repository.RoundDigitRepository;
@@ -10,11 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor

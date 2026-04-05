@@ -1,7 +1,7 @@
 package FullBicho.app.repository;
 
 import FullBicho.app.entity.Bet;
-import FullBicho.app.util.BetStatus;
+import FullBicho.app.util.items.BetStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
