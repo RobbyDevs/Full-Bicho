@@ -1,6 +1,7 @@
 package FullBicho.app.controller;
 
 import FullBicho.app.dto.UserRequestDTO;
+import FullBicho.app.dto.UserUpdateDTO;
 import FullBicho.app.entity.User;
 import FullBicho.app.service.UserService;
 import FullBicho.app.util.items.InputTreatment;
@@ -22,7 +23,7 @@ public class UserController {
 
 
     @PostMapping("/saveUser")
-    public ResponseEntity<String> saveUser(@Valid @RequestBody UserRequestDTO userDTO){
+    public ResponseEntity<String> SaveUser(@Valid @RequestBody UserRequestDTO userDTO){
         try {
             userDTO.setCpf(treat.treatCPF(userDTO.getCpf()));
             String message = userService.saveUser(userDTO);
@@ -34,26 +35,14 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/deleteUser")
-    public ResponseEntity<String> deleteUser(@Valid @RequestParam String cpf){
 
-        String tempCPF = treat.treatCPF(cpf);
-        try {
-            String message = userService.deleteUser(cpf);
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-
-    @PutMapping("/updateUser/")
-    public ResponseEntity<String> updateUser( @RequestBody UserRequestDTO userTDO){
+    @PatchMapping ("/updateUser")
+    public ResponseEntity<String> updateUser(@RequestBody UserUpdateDTO userUpdtTDO){
         try {
 
-            String message = this.userService.updateUser(userTDO);
+            userUpdtTDO.setCpf(treat.treatCPF(userUpdtTDO.getCpf()));
+
+            String message = this.userService.updateUser(userUpdtTDO);
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
         catch (Exception e){
@@ -62,26 +51,6 @@ public class UserController {
     }
 
 
-    @GetMapping("/findUserById/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id){
-        try {
-            User user = userService.findUserById(id);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
 
-    @GetMapping("/findAllUsers")
-    public ResponseEntity<List<User>> findAllUsers(){
-        try {
-            List<User> list = this.userService.findAllUsers();
-            return new ResponseEntity<>(list, HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
 
 }

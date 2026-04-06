@@ -3,6 +3,7 @@ package FullBicho.app.entity;
 import FullBicho.app.util.items.BetStatus;
 import FullBicho.app.util.items.BetType;
 import FullBicho.app.util.items.DigitPosition;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,11 +17,13 @@ public class Bet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long betId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "userId",nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "drawId", nullable = false)
     private Draw draw;
 
@@ -46,7 +49,7 @@ public class Bet {
     // MARCAR BET COMO GANHO
     public void markAsWin(Long resultNumber, DigitPosition position, double payout) {
         if (this.status != BetStatus.PENDING) {
-            throw new IllegalStateException("BET JÁ FOI PROCESSADA");
+            throw new IllegalStateException("ESSA BET JÁ FOI PROCESSADA");
         }
 
         this.status = BetStatus.WIN;
@@ -58,7 +61,7 @@ public class Bet {
     // Marca BET como PERDA
     public void markAsLoss() {
         if (this.status != BetStatus.PENDING) {
-            throw new IllegalStateException("Bet already processed");
+            throw new IllegalStateException("ESSA BET JÁ FOI PROCESSADA");
         }
 
         this.status = BetStatus.LOSE;

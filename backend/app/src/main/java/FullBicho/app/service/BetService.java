@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -61,6 +62,7 @@ public class BetService {
         bet.setAmount(betRequest.getAmount());
         bet.setStatus(BetStatus.PENDING);
 
+
         betRepository.save(bet);
         return "Bet Criada com Sucesso!";
     }
@@ -97,6 +99,36 @@ public class BetService {
         }
 
         return "Bets Criadas com Sucesso!";
+    }
+
+    public List<Bet> findByUserId(Long userId) {
+        try {
+            List<Bet> betList = betRepository.findByUser_UserId(userId);
+
+            if (betList.isEmpty()) {
+                throw new RuntimeException("NENHUMA BET REGISTRADA!!!");
+            }
+
+            return betList;
+        }
+        catch (Exception e) {
+            throw new RuntimeException (e.getMessage());
+        }
+    }
+
+    public List<Bet> findBetsByStatus(BetStatus betStatus) {
+        try {
+            List<Bet> betList = betRepository.findByStatus(betStatus);
+
+            if (betList.isEmpty()) {
+                throw new RuntimeException("NENHUMA BET PENDENTE!!!");
+            }
+
+            return betList;
+        }
+        catch (Exception e) {
+            throw new RuntimeException (e.getMessage());
+        }
     }
 
 

@@ -48,10 +48,10 @@ public class DrawController {
 
     }
 
-    @GetMapping("/startDraw/{id}")
-    public ResponseEntity<String> startDraw(@PathVariable Long  id){
+    @GetMapping("/startDraw")
+    public ResponseEntity<String> startDraw(@RequestParam Long  drawId){
         try{
-            String message = drawService.startDraw(id);
+            String message = drawService.startDraw(drawId);
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
         catch (Exception e){

@@ -1,9 +1,11 @@
 package FullBicho.app.service;
 
 import FullBicho.app.dto.UserRequestDTO;
+import FullBicho.app.dto.UserUpdateDTO;
 import FullBicho.app.entity.User;
 import FullBicho.app.repository.UserRepository;
 import FullBicho.app.util.items.InputTreatment;
+import FullBicho.app.util.items.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class UserService {
     @Autowired
     private InputTreatment inputTreatment;
 
-    // CREATE
+    // CREATE PUBLIC
     public String saveUser(UserRequestDTO userDTO) {
         try {
             //Checar CPF
@@ -33,7 +35,7 @@ public class UserService {
             newUser.setPassword(userDTO.getPassword());
             newUser.setEmail(userDTO.getEmail().toLowerCase(Locale.getDefault())); // atribui email em lowecase
             newUser.setCpf(userDTO.getCpf());
-
+            newUser.setRole(RoleType.REGULAR);
 
             this.userRepository.save(newUser);
 
@@ -44,38 +46,47 @@ public class UserService {
         }
     }
 
-    // DELETE
-    public String deleteUser(String cpf) {
-        try {
-            if (userRepository.existsByCpf(cpf)){
-                userRepository.deleteByCpf(cpf);
+
+    // UPDATE
+    public String updateUser(UserUpdateDTO userDTO) {
+        try{
+
+            //checar se user existe
+            User foundUser = userRepository.findByCpf(userDTO.getCpf());
+            if (foundUser == null) {throw new RuntimeException("USUÁRIO NÃO ENCONTRADO!!!");}
+
+            //checar se senha bate
+            if (!(foundUser.getPassword().equals(userDTO.getPassword()))) {
+                throw new IllegalArgumentException("SENHA INCORRETA!!!");
             }
-            else  {
-                throw new  IllegalArgumentException("CPF JÁ DADASTRADO !!!");
+
+
+            //CRIAR NOVO USER
+
+
+            if (!userDTO.getUsername().isBlank()) {
+                foundUser.setUsername(userDTO.getUsername().toUpperCase(Locale.getDefault()));
             }
+            if (!userDTO.getEmail().isBlank()) {
+                foundUser.setEmail(userDTO.getEmail().toLowerCase(Locale.getDefault()));
+            }
+//            if (userDTO.getCpf().equals(foundUser.getCpf())) {
+//                newUser.setCpf(userDTO.getCpf());
+//            }
+
+            userRepository.save(foundUser);
+
+
+
+
         }
         catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
-        return "USUÁRIO DELETADO COM SUCESSO!!!";
+        return "USUÁRIO ATUALIZADO COM SUCESSO!!!";
     }
 
-    // UPDATE
-    public String updateUser(UserRequestDTO userDTO) {
-        return "ok";
-    }
 
-    // FIND BY ID
-    public User findUserById(Long id) {
-        return null;
-    }
 
-    // FIND ALL
-    public List<User> findAllUsers() {
-        try {
-            return this.userRepository.findAll();
-        } catch (DataAccessException e) {
-            throw new RuntimeException("Erro ao acessar o banco de dados ao listar usuários.", e);
-        }
-    }
+
 }

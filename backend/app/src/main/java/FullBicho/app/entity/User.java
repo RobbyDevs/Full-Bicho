@@ -1,6 +1,7 @@
 package FullBicho.app.entity;
 
 
+import FullBicho.app.util.items.RoleType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,8 @@ public class User {
     private String password; //RequestBody
     private String email; //RequestBody
 
+    @Enumerated(EnumType.STRING)
+    private RoleType role; //Auto select - default: "REGULAR"
     private Double balance = 1000.00;
 
 
