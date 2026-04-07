@@ -52,7 +52,7 @@ public class BetController {
         }
     }
 
-    @GetMapping("/findBetsById")
+    @GetMapping("/findBetsByUserId")
     public ResponseEntity<List<Bet>> findByUserId(@RequestParam Long userId){
 
         try {

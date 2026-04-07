@@ -72,7 +72,6 @@ public class AdminController {
     @GetMapping("/findUserByCpf")
     public ResponseEntity<User> findUserByCpf(@RequestParam String cpf){
         try {
-
             User user = adminService.findUserByCpf(treat.treatCPF(cpf));
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
