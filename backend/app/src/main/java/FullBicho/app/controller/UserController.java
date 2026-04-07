@@ -2,7 +2,6 @@ package FullBicho.app.controller;
 
 import FullBicho.app.dto.UserRequestDTO;
 import FullBicho.app.dto.UserUpdateDTO;
-import FullBicho.app.entity.User;
 import FullBicho.app.service.UserService;
 import FullBicho.app.util.items.InputTreatment;
 import jakarta.validation.Valid;
@@ -23,7 +22,7 @@ public class UserController {
 
 
     @PostMapping("/saveUser")
-    public ResponseEntity<String> SaveUser(@Valid @RequestBody UserRequestDTO userDTO){
+    public ResponseEntity<String> saveUser(@Valid @RequestBody UserRequestDTO userDTO){
         try {
             userDTO.setCpf(treat.treatCPF(userDTO.getCpf()));
             String message = userService.saveUser(userDTO);
