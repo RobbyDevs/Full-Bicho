@@ -1,0 +1,35 @@
+<form [formGroup]="form" (ngSubmit)="onLogin()">
+
+  <div>
+    <input type="text" placeholder="Email" formControlName="email">
+
+    <small *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+      <span *ngIf="form.get('email')?.errors?.['required']">
+        Email é obrigatório
+      </span>
+      <span *ngIf="form.get('email')?.errors?.['email']">
+        Email inválido
+      </span>
+    </small>
+  </div>
+
+  <div>
+    <input type="password" placeholder="Senha" formControlName="password">
+
+    <small *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+      <span *ngIf="form.get('password')?.errors?.['required']">
+        Senha é obrigatória
+      </span>
+      <span *ngIf="form.get('password')?.errors?.['minlength']">
+        Mínimo de 4 caracteres
+      </span>
+    </small>
+  </div>
+
+  <button type="submit">Entrar</button>
+
+  <p *ngIf="errorMessage" style="color: red;">
+    {{ errorMessage }}
+  </p>
+
+</form>

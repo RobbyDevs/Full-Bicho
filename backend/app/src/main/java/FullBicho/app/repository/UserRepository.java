@@ -15,5 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByCpf(@NotBlank(message = "CPF INVÁLIDO!!!") String cpf);
 
+    User findByEmail(String email);
 
 }

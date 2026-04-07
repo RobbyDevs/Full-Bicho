@@ -11,8 +11,6 @@ import lombok.Setter;
 @Getter
 public class AdminUpdateDTO extends UserUpdateDTO{
 
-
-
     private RoleType  role;
 
     private final Double balance = 1000.00;

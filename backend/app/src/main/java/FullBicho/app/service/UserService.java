@@ -1,5 +1,6 @@
 package FullBicho.app.service;
 
+import FullBicho.app.dto.UserLoginDTO;
 import FullBicho.app.dto.UserRequestDTO;
 import FullBicho.app.dto.UserUpdateDTO;
 import FullBicho.app.entity.User;
@@ -86,7 +87,39 @@ public class UserService {
         return "USUÁRIO ATUALIZADO COM SUCESSO!!!";
     }
 
+    public User findUserByCpf(String cpf) {
+        try {
+            User foundUser = userRepository.findByCpf(cpf);
+            if (foundUser == null) {
+                throw new RuntimeException("USUÁRIO NÃO ENCONTRADO!!!");
+            }
 
+            return this.userRepository.findByCpf(cpf);
+        }
+        catch (Exception e) {
+            throw new RuntimeException (e.getMessage());
+        }
+    }
 
+    public User userLogin(UserLoginDTO userDTO) {
+        try {
+            if (userDTO.getEmail().isBlank() ||  userDTO.getPassword().isBlank()) {
+                throw new RuntimeException("PREENCHA TODOS OS CAMPOS!!!");
+            }
+            User foundUser = userRepository.findByEmail(userDTO.getEmail());
+            if (foundUser == null) {
+                throw new RuntimeException("USUÁRIO NÃO ENCONTRADO!!!");
+            }
+
+            if (!foundUser.getPassword().equals(userDTO.getPassword())) {
+                throw new RuntimeException("SENHA INCORRETA!!!");
+            }
+
+            return foundUser;
+        }
+        catch (Exception e) {
+            throw new RuntimeException (e.getMessage());
+        }
+    }
 
 }

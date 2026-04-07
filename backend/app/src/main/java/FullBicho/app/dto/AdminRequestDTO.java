@@ -13,8 +13,8 @@ import org.aspectj.bridge.Message;
 public class AdminRequestDTO extends  UserRequestDTO {
 
     private final RoleType roleType;
-    public AdminRequestDTO(String username, String password, String email, String cpf, RoleType roleType, RoleType role) {
+    public AdminRequestDTO(String username, String password, String email, String cpf, RoleType roleType) {
         super(username, password, email, cpf);
-        this.roleType = role;
+        this.roleType = roleType;
     }
 }
