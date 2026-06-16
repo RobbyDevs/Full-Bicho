@@ -38,7 +38,7 @@ O projeto simula uma plataforma de apostas baseada no jogo do bicho, com foco em
 
 ## Arquitetura
 
-O projeto segue uma arquitetura baseada no padrão **MVC (Model-View-Controller)**, separando responsabilidades entre camadas de apresentação, controle, regra de negócio e persistência.
+O projeto segue uma arquitetura monolítica baseada no padrão **MVC (Model-View-Controller)**, separando responsabilidades entre camadas de apresentação, controle, regra de negócio e persistência.
 
 No back-end, a estrutura principal é organizada em:
 
