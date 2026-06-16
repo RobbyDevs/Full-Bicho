@@ -1,0 +1,4 @@
+<app-layout *ngIf="user$ | async"></app-layout>
+<main class="page-shell" [class.page-shell-auth]="!(user$ | async)">
+  <router-outlet></router-outlet>
+</main>

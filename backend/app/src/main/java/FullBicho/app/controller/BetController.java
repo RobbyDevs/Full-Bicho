@@ -57,7 +57,7 @@ public class BetController {
 
         try {
             List<Bet> list = this.betService.findByUserId(userId);
-            return new ResponseEntity<>(list, HttpStatus.FOUND);
+            return new ResponseEntity<>(list, HttpStatus.OK);
         }
         catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
@@ -69,7 +69,7 @@ public class BetController {
 
         try {
             List<Bet> list = this.betService.findBetsByStatus(betStatus);
-            return new ResponseEntity<>(list, HttpStatus.FOUND);
+            return new ResponseEntity<>(list, HttpStatus.OK);
         }
         catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

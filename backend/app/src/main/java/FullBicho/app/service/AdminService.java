@@ -1,16 +1,16 @@
 package FullBicho.app.service;
+import java.util.List;
+import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import FullBicho.app.dto.AdminRequestDTO;
 import FullBicho.app.dto.AdminUpdateDTO;
 import FullBicho.app.entity.User;
 import FullBicho.app.repository.UserRepository;
 import FullBicho.app.util.items.RoleType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Locale;
 
 @Service
 public class AdminService extends UserService{
@@ -18,6 +18,8 @@ public class AdminService extends UserService{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public String saveUser(AdminRequestDTO userDTO) {
@@ -34,7 +36,7 @@ public class AdminService extends UserService{
 
             User newUser = new User();
             newUser.setUsername(userDTO.getUsername().toUpperCase(Locale.getDefault())); // atribui username em Upercase
-            newUser.setPassword(userDTO.getPassword());
+            newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             newUser.setEmail(userDTO.getEmail().toLowerCase(Locale.getDefault())); // atribui email em lowecase
             newUser.setCpf(userDTO.getCpf());
             newUser.setRole(userDTO.getRoleType());
@@ -57,7 +59,7 @@ public class AdminService extends UserService{
             if (foundUser == null) {throw new RuntimeException("USUÁRIO NÃO ENCONTRADO!!!");}
 
             //checar se senha bate
-            if (!(foundUser.getPassword().equals(adminDTO.getPassword()))) {
+            if (!passwordEncoder.matches(adminDTO.getPassword(), foundUser.getPassword())) {
                 throw new IllegalArgumentException("SENHA INCORRETA!!!");
             }
 

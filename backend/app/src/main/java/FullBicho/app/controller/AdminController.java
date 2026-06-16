@@ -62,7 +62,7 @@ public class AdminController {
     public ResponseEntity<List<User>> findAllUsers(){
         try {
             List<User> list = this.adminService.findAllUsers();
-            return new ResponseEntity<>(list, HttpStatus.CREATED);
+            return new ResponseEntity<>(list, HttpStatus.OK);
         }
         catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

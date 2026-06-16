@@ -2,6 +2,7 @@ package FullBicho.app.controller;
 
 import FullBicho.app.dto.DrawRequestDTO;
 import FullBicho.app.entity.Draw;
+import FullBicho.app.entity.RoundDigit;
 import FullBicho.app.entity.User;
 import FullBicho.app.service.DrawService;
 import FullBicho.app.service.UserService;
@@ -61,5 +62,37 @@ public class DrawController {
 
     }
 
+    @GetMapping("/findAllDraws")
+    public ResponseEntity<List<Draw>> findAllDraws(){
+        try{
+            List<Draw> draws = drawService.findAllDraws();
+            return new ResponseEntity<>(draws, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("/findDrawById")
+    public ResponseEntity<Draw> findDrawById(@RequestParam Long drawId){
+        try{
+            Draw draw = drawService.findDrawById(drawId);
+            return new ResponseEntity<>(draw, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("/findRoundDigitsByDrawId")
+    public ResponseEntity<List<RoundDigit>> findRoundDigitsByDrawId(@RequestParam Long drawId){
+        try{
+            List<RoundDigit> digits = drawService.findRoundDigitsByDrawId(drawId);
+            return new ResponseEntity<>(digits, HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+    }
 
 }

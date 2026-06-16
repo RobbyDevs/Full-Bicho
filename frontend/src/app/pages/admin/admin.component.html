@@ -1,0 +1,80 @@
+<section class="stack-page">
+  <div class="hero-panel card-glass">
+    <div>
+      <span class="eyebrow">Admin</span>
+      <h1>Painel administrativo</h1>
+    </div>
+    <button class="btn btn-primary" type="button" (click)="generateDraw()" [disabled]="actionLoading">
+      Gerar sorteio
+    </button>
+  </div>
+
+  <div class="alert" *ngIf="alert" [ngClass]="'alert-' + alert.type">{{ alert.message }}</div>
+
+  <div class="content-split admin-split">
+    <section class="card-glass panel-block">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Sorteios</span>
+          <h2>Controle</h2>
+        </div>
+        <button class="btn btn-sm btn-outline-light" type="button" (click)="loadDraws()">Atualizar</button>
+      </div>
+
+      <label class="form-label">Sorteio</label>
+      <select class="form-select" [(ngModel)]="selectedDrawId" (change)="loadDigits()">
+        <option [ngValue]="null">Selecione</option>
+        <option *ngFor="let draw of draws; trackBy: trackDraw" [ngValue]="draw.drawId">
+          #{{ draw.drawId }} · {{ draw.status }} · {{ draw.createdAt | date:'dd/MM/yyyy HH:mm' }}
+        </option>
+      </select>
+
+      <div class="modal-actions left mt-3">
+        <button class="btn btn-primary" type="button" (click)="startSelectedDraw()" [disabled]="actionLoading || !selectedDrawId">
+          Finalizar sorteio
+        </button>
+        <button class="btn btn-outline-light" type="button" (click)="loadDigits()" [disabled]="!selectedDrawId">
+          Ver rodadas
+        </button>
+      </div>
+
+      <div class="result-digits mt-4" *ngIf="digits.length">
+        <article *ngFor="let digit of digits">
+          <span>{{ positionLabel(digit.position) }}</span>
+          <strong>{{ digit.digit | number:'4.0-0' }}</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="card-glass panel-block">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Usuários</span>
+          <h2>Lista</h2>
+        </div>
+        <button class="btn btn-sm btn-outline-light" type="button" (click)="loadUsers()">Atualizar</button>
+      </div>
+
+      <div class="table-responsive app-table-wrap">
+        <table class="table app-table align-middle">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Saldo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users; trackBy: trackUser">
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ user.balance | currency:'BRL':'symbol':'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</section>

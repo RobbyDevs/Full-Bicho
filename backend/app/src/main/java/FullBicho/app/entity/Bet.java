@@ -7,7 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,6 +46,15 @@ public class Bet {
     private DigitPosition digitPosition;
 
     private double payout;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
 
 
     //-----------------------
@@ -96,5 +108,14 @@ public class Bet {
     public double getAmount() {
         return amount;
     }
+
+    public Long getUserId() {
+        return this.user != null ? this.user.getUserId() : null;
+    }
+
+    public Long getDrawId() {
+        return this.draw != null ? this.draw.getDrawId() : null;
+    }
+
 }
 

@@ -1,0 +1,37 @@
+<section class="auth-card card-glass auth-card-wide">
+  <div class="auth-copy">
+    <span class="eyebrow">Cadastro</span>
+    <h1>Crie sua carteira</h1>
+    <p>A carteira começa com saldo de R$ 1.000,00. O CPF aparece porque o backend exige esse campo no cadastro.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <label class="form-label">Nome completo</label>
+    <input class="form-control" formControlName="username" placeholder="Seu nome">
+
+    <label class="form-label mt-3">Email</label>
+    <input class="form-control" type="email" formControlName="email" placeholder="voce@email.com">
+
+    <label class="form-label mt-3">CPF</label>
+    <input class="form-control" formControlName="cpf" placeholder="Somente números ou formatado">
+
+    <div class="row g-3 mt-1">
+      <div class="col-md-6">
+        <label class="form-label">Senha</label>
+        <input class="form-control" type="password" formControlName="password">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Confirmar senha</label>
+        <input class="form-control" type="password" formControlName="confirmPassword">
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-100 mt-4" type="submit" [disabled]="loading">
+      {{ loading ? 'Cadastrando...' : 'Cadastrar' }}
+    </button>
+
+    <p class="auth-link">Já tem conta? <a routerLink="/login">Entrar</a></p>
+  </form>
+</section>

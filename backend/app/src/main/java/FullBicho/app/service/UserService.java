@@ -1,4 +1,9 @@
 package FullBicho.app.service;
+import java.util.Locale;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import FullBicho.app.dto.UserLoginDTO;
 import FullBicho.app.dto.UserRequestDTO;
@@ -7,17 +12,13 @@ import FullBicho.app.entity.User;
 import FullBicho.app.repository.UserRepository;
 import FullBicho.app.util.items.InputTreatment;
 import FullBicho.app.util.items.RoleType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Locale;
 
 @Service
 public class UserService {
 
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -33,7 +34,7 @@ public class UserService {
 
             User newUser = new User();
             newUser.setUsername(userDTO.getUsername().toUpperCase(Locale.getDefault())); // atribui username em Upercase
-            newUser.setPassword(userDTO.getPassword());
+            newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             newUser.setEmail(userDTO.getEmail().toLowerCase(Locale.getDefault())); // atribui email em lowecase
             newUser.setCpf(userDTO.getCpf());
             newUser.setRole(RoleType.REGULAR);
@@ -57,7 +58,7 @@ public class UserService {
             if (foundUser == null) {throw new RuntimeException("USUÁRIO NÃO ENCONTRADO!!!");}
 
             //checar se senha bate
-            if (!(foundUser.getPassword().equals(userDTO.getPassword()))) {
+            if (!passwordEncoder.matches(userDTO.getPassword(), foundUser.getPassword())) {
                 throw new IllegalArgumentException("SENHA INCORRETA!!!");
             }
 
@@ -111,7 +112,7 @@ public class UserService {
                 throw new RuntimeException("USUÁRIO NÃO ENCONTRADO!!!");
             }
 
-            if (!foundUser.getPassword().equals(userDTO.getPassword())) {
+            if (!passwordEncoder.matches(userDTO.getPassword(), foundUser.getPassword())) {
                 throw new RuntimeException("SENHA INCORRETA!!!");
             }
 

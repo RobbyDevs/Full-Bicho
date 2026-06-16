@@ -3,6 +3,7 @@ package FullBicho.app.service;
 
 import FullBicho.app.entity.Bet;
 import FullBicho.app.entity.RoundDigit;
+import FullBicho.app.util.items.DigitPosition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,12 +75,17 @@ public class BetProcessService {
     }
 
     public double calculatePayout(Bet bet) {
+        return calculatePayout(bet, DigitPosition.HEAD);
+    }
+
+    public double calculatePayout(Bet bet, DigitPosition position) {
+        boolean head = position == DigitPosition.HEAD;
 
         switch (bet.getType()) {
-            case THOUSANDS: return bet.getAmount() * 4000;
-            case HUNDREDS: return bet.getAmount() * 600;
-            case TENS: return bet.getAmount() * 60;
-            case GROUP: return bet.getAmount() * 18;
+            case THOUSANDS: return bet.getAmount() * (head ? 4000 : 800);
+            case HUNDREDS: return bet.getAmount() * (head ? 600 : 120);
+            case TENS: return bet.getAmount() * (head ? 60 : 12);
+            case GROUP: return bet.getAmount() * (head ? 18 : 3.6);
             default: return 0;
         }
     }
@@ -96,14 +102,11 @@ public class BetProcessService {
                     double totalPayout = 0.0;
 
                     for (RoundDigit digit : winners) {
-                        double payout = calculatePayout(bet);
-
-                        //Marcando como GANHO
-                        bet.markAsWin(digit.getDigit(), digit.getPosition(), payout);
-
-                        totalPayout += payout;
+                        totalPayout += calculatePayout(bet, digit.getPosition());
                     }
 
+                    RoundDigit firstWinner = winners.get(0);
+                    bet.markAsWin(firstWinner.getDigit(), firstWinner.getPosition(), totalPayout);
                     walletService.creditValue(bet.getUser(), totalPayout);
 
                 } else {

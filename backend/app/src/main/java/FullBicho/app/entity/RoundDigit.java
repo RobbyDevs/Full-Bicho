@@ -2,6 +2,7 @@ package FullBicho.app.entity;
 
 
 import FullBicho.app.util.items.DigitPosition;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class RoundDigit {
     private Long roundDigitId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "drawId",nullable = false)
     private Draw draw;
 

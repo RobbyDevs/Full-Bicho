@@ -1,13 +1,20 @@
 package FullBicho.app.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import FullBicho.app.util.items.RoleType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.processing.Pattern;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +30,11 @@ public class User {
     private String cpf;
 
     private String username; //RequestBody
-    private String password; //RequestBody
+    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false, length = 100)
+    private String password;//RequestBody
+
     private String email; //RequestBody
 
     @Enumerated(EnumType.STRING)

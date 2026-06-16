@@ -1,0 +1,179 @@
+<section class="dashboard-grid">
+  <div class="hero-panel card-glass">
+    <div>
+      <span class="eyebrow">Dashboard</span>
+      <h1>Boa aposta!</h1>
+      <p>Escolha o animal, selecione o tipo de jogo, e faça sua aposta!</p>
+    </div>
+
+    <div class="draw-box">
+      <small>Sorteio atual</small>
+      <strong *ngIf="activeDraw; else noDraw">#{{ activeDraw.drawId }}</strong>
+      <ng-template #noDraw><strong>Nenhum</strong></ng-template>
+      <button class="btn btn-sm btn-primary" type="button" (click)="createNewDraw()" [disabled]="creatingDraw">
+        {{ creatingDraw ? 'Gerando...' : 'Novo sorteio' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="wallet-row">
+    <article class="metric-card" >
+      <span>Saldo atual</span>
+      <strong style="color: #bbfbba;" >{{ user?.balance || 0 | currency:'BRL':'symbol':'1.2-2' }}</strong>
+      
+    </article>
+    
+    <article class="metric-card">
+      <span>Total ganho</span>
+      <strong>{{ stats.totalWon | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+    <article class="metric-card">
+      <span>Total perdido</span>
+      <strong>{{ stats.totalLost | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+    <article class="metric-card">
+      <span>Lucro</span>
+      <strong [class.text-danger]="stats.profit < 0">{{ stats.profit | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+  </div>
+
+  <div class="alert" *ngIf="alert" [ngClass]="'alert-' + alert.type">{{ alert.message }}</div>
+
+  <div class="content-split">
+    <section class="card-glass panel-block">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Tabela</span>
+          <h2>Animais</h2>
+        </div>
+        <small>{{ selectedAnimal ? selectedAnimal.name : 'Selecione um animal' }}</small>
+      </div>
+
+      <div class="animal-grid">
+        <button
+          class="animal-card"
+          type="button"
+          *ngFor="let animal of animals; trackBy: trackAnimal"
+          [class.active]="selectedAnimal?.group === animal.group"
+          (click)="selectAnimal(animal)">
+          <span class="animal-icon">{{ animal.icon }}</span>
+          <strong>{{ animal.group | number:'2.0-0' }} · {{ animal.name }}</strong>
+          <small>{{ animal.tens.join(' · ') }}</small>
+        </button>
+      </div>
+    </section>
+
+    <aside class="card-glass panel-block bet-panel">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Apostar</span>
+          <h2>Nova aposta</h2>
+        </div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="openConfirmation()">
+        <label class="form-label">Jogo</label>
+        <select class="form-select" formControlName="type">
+          <option *ngFor="let type of betTypes" [ngValue]="type.value">{{ type.label }}</option>
+        </select>
+        <small class="form-text">{{ selectedTypeHelper() }}</small>
+
+        <label class="form-label mt-3">Número da aposta</label>
+        <input class="form-control" type="number" formControlName="chosenNumber" placeholder="Digite ou selecione no grid">
+        <small class="field-error" *ngIf="form.controls.chosenNumber.touched && form.controls.chosenNumber.invalid">
+          Número incompatível com o tipo de jogo.
+        </small>
+
+        <label class="form-label mt-3">Valor</label>
+        <input class="form-control" type="number" formControlName="amount" min="1" step="0.01" placeholder="R$ 10,00">
+
+        <div class="bet-summary">
+          <span>Prévia</span>
+          <strong>{{ selectedTypeLabel() }} · {{ chosenDisplay() }}</strong>
+          <small>{{ form.controls.amount.value || 0 | currency:'BRL':'symbol':'1.2-2' }}</small>
+        </div>
+
+        <button class="btn btn-primary w-100 mt-3" type="submit" [disabled]="placingBet || !activeDraw">
+          Confirmar aposta
+        </button>
+      </form>
+
+      <button class="btn btn-outline-light w-100 mt-3" type="button" (click)="startDraw()" [disabled]="startingDraw || !activeDraw">
+        {{ startingDraw ? 'Gerando resultado...' : 'Gerar número e finalizar sorteio' }}
+      </button>
+    </aside>
+  </div>
+
+  <section class="card-glass panel-block">
+    <div class="section-title">
+      <div>
+        <span class="eyebrow">Recentes</span>
+        <h2>Últimas apostas</h2>
+      </div>
+      <small>{{ stats.total }} apostas</small>
+    </div>
+
+    <div class="empty-state" *ngIf="!bets.length && !loading">Nenhuma aposta registrada ainda.</div>
+    <div class="history-list compact" *ngIf="bets.length">
+      <article class="bet-row" *ngFor="let bet of bets.slice(0, 5); trackBy: trackBet">
+        <div>
+          <strong>{{ betLabel(bet) }}</strong>
+          <small>{{ bet.createdAt | date:'dd/MM/yyyy, HH:mm' }} · apostado {{ bet.amount | currency:'BRL':'symbol':'1.2-2' }}</small>
+        </div>
+        <span class="status-pill" [ngClass]="statusClass(bet.status)">
+          {{ bet.status === 'WIN' ? 'Ganhou' : bet.status === 'LOSE' ? 'Perdeu' : 'Pendente' }}
+        </span>
+      </article>
+    </div>
+  </section>
+</section>
+
+<div class="modal-backdrop-custom" *ngIf="showConfirmation">
+  <div class="modal-card card-glass">
+    <span class="eyebrow">Confirmação</span>
+    <h2>Confirmar aposta?</h2>
+    <p>Confira antes de enviar. Depois que a aposta for registrada, o valor será debitado da carteira.</p>
+
+    <div class="confirm-list">
+      <div><span>Jogo</span><strong>{{ selectedTypeLabel() }}</strong></div>
+      <div><span>Número</span><strong>{{ chosenDisplay() }}</strong></div>
+      <div><span>Valor</span><strong>{{ form.controls.amount.value || 0 | currency:'BRL':'symbol':'1.2-2' }}</strong></div>
+      <div><span>Sorteio</span><strong>#{{ activeDraw?.drawId }}</strong></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline-light" type="button" (click)="closeConfirmation()">Voltar</button>
+      <button class="btn btn-primary" type="button" (click)="placeBet()" [disabled]="placingBet">
+        {{ placingBet ? 'Registrando...' : 'Confirmar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop-custom" *ngIf="showResult">
+  <div class="modal-card card-glass result-modal">
+    <span class="eyebrow">Resultado</span>
+    <h2 *ngIf="resultBet?.status === 'WIN'" style="color: #b8fbba;">Você ganhou.</h2>
+    <h2 *ngIf="resultBet?.status === 'LOSE'" style="color: #fbbaba;">Não foi dessa vez.</h2>
+    <h2 *ngIf="!resultBet">Sorteio finalizado.</h2>
+
+    <div class="result-digits" *ngIf="resultDigits.length">
+      <article *ngFor="let digit of resultDigits">
+        <span>{{ positionLabel(digit.position) }}</span>
+        <strong>{{ digit.digit | number:'4.0-0' }}</strong>
+      </article>
+    </div>
+
+    <div class="confirm-list" *ngIf="resultBet">
+      <div><span>Aposta</span><strong>{{ betLabel(resultBet) }}</strong></div>
+      <div><span>Resultado</span><strong>{{ resultBet.resultNumber || '-' }}</strong></div>
+      <div><span>Posição</span><strong>{{ positionLabel(resultBet.digitPosition) }}</strong></div>
+      <div><span>Ganho</span><strong>{{ resultBet.payout | currency:'BRL':'symbol':'1.2-2' }}</strong></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline-light" type="button" (click)="closeResult()">Fechar</button>
+      <button class="btn btn-primary" type="button" (click)="createNewDraw(); closeResult()">Novo sorteio</button>
+    </div>
+  </div>
+</div>

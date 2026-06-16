@@ -1,142 +1,231 @@
-# 🎲 Jogo do Bicho — Sistema Completo
+# Full-Bicho
 
- Projeto desenvolvido para fins acadêmicos durante disciplina de Laboratório de Produção de Software; ministrada por Ronem Lavareda no Instituto Federal do Amazonas - Campus Parintins.  
+Sistema web desenvolvido para fins acadêmicos durante a disciplina de **Laboratório de Produção de Software**, ministrada pelo professor **Ronem Lavareda**, no **Instituto Federal do Amazonas — Campus Parintins**.
 
----
+O projeto simula uma plataforma de apostas baseada no jogo do bicho, com foco em arquitetura, integração entre front-end e back-end, persistência de dados, autenticação, regras de negócio e boas práticas de desenvolvimento de software.
 
-## 📌 Sobre o Projeto
+> Projeto desenvolvido exclusivamente para fins educacionais.
 
-Este projeto simula o funcionamento do jogo do bicho, permitindo:
+## Tecnologias utilizadas
 
-* Cadastro de usuários
-* Realização de apostas
-* Geração de sorteios (draws)
-* Cálculo de resultados
-* Validação de regras do jogo
+### Front-end
 
-A aplicação foi construída com arquitetura organizada, visando escalabilidade e clareza no código.
+* Angular
+* TypeScript
+* Bootstrap
+* Bootstrap Icons
+* HTML5
+* CSS3
 
----
-
-## 🧠 Regras do Jogo
-
-O sistema segue a lógica tradicional:
-
-* Um número aleatório de **0 a 9999** é gerado
-* A partir dele, são extraídas:
-
-  * **Milhar** → número completo (ex: 9413)
-  * **Centena** → últimos 3 dígitos (413)
-  * **Dezena** → últimos 2 dígitos (13)
-  * **Grupo** → baseado na dezena
-
-Cada grupo representa um animal, contendo **4 números consecutivos**.
-
-Exemplo:
-
-* Grupo do Galo → números 49, 50, 51, 52
-
----
-
-## 🏗️ Estrutura do Projeto
-
-### 📦 Backend (Spring Boot)
-
-Organização baseada em camadas:
-
-```
-controller/     → Recebe requisições HTTP
-service/        → Regras de negócio
-repository/     → Acesso ao banco de dados
-dto/            → Transferência de dados
-entity/   → Representação das entidades
-exception/      → Handler de erros básicos
-util/           → Emuns e auxiliares
-```
-
----
-
-### 🎨 Frontend
-
-AINDA EM DESENVOLVIMENTO!
-
----
-
-## 🔐 Usuários
-
-Tipos de usuários:
-
-* **REGULAR**
-
-* ADMIN
-
-* Restrições de acesso a funcionalidades
-
-* Controle de permissões
-
----
-
-## 🎯 Funcionalidades Principais
-
-* ✅ Cadastro de usuários
-* ✅ Login e autenticação
-* ✅ Criação de sorteios (draw)
-* ✅ Geração automática de números
-* ✅ Registro de apostas
-* ✅ Validação de apostas vencedoras
-* ✅ Tratamento de exceções
-* ✅ Regras específicas por tipo de aposta
-*  ✅ Histórico de aposta
-
----
-
-## 🔢 Tipos de Aposta
-
-* Milhar
-* Centena
-* Dezena
-* Grupo
-
-Cada tipo possui:
-
-* Probabilidade diferente
-* Retorno/premiação diferente
-
----
-
-## ⚙️ Tecnologias Utilizadas
-
-### Backend:
+### Back-end
 
 * Java
 * Spring Boot
+* Spring Web
 * Spring Data JPA
 * Hibernate
-* Jakarta Validation
+* Maven
+* Lombok
 
-### Frontend:
-
-* Angular /  **MDBootstrap**
-
-### Banco de Dados:
+### Banco de dados
 
 * MySQL
 
----
+### Documentação e DevOps
 
-## 📊 Melhorias Futuras
+* Swagger / OpenAPI
+* GitHub Actions
 
-* FRONTEND COMPLETO
-* RELATÓRIO WIN/LOSE
+## Arquitetura
 
----
+O projeto segue uma arquitetura baseada no padrão **MVC (Model-View-Controller)**, separando responsabilidades entre camadas de apresentação, controle, regra de negócio e persistência.
 
-## ⚠️ Aviso
+No back-end, a estrutura principal é organizada em:
 
-Este projeto é apenas para fins **educacionais** e **didáticos**, não incentivando práticas de jogos de azar.
+* **Controller**: responsável por expor os endpoints da API.
+* **Service**: responsável pelas regras de negócio.
+* **Repository**: responsável pela comunicação com o banco de dados.
+* **Model/Entity**: representa as entidades persistidas.
+* **DTO**: utilizado para transportar dados entre cliente e servidor.
 
----
+No front-end, a aplicação é organizada em:
 
-## 👤 Autor
+* **Pages/Components**: telas e componentes reutilizáveis.
+* **Services**: comunicação com a API.
+* **Models/Interfaces**: representação dos dados usados pela aplicação.
+* **Guards**: controle de acesso às rotas.
+* **Interceptors**: preparação para tratamento global de requisições.
 
-Desenvolvido por **Robert Marialva Cruz**
+## Funcionalidades
+
+* Cadastro de usuários
+* Login de usuários
+* Perfil do usuário
+* Carteira com saldo inicial
+* Listagem dos animais disponíveis
+* Realização de apostas
+* Seleção do tipo de aposta
+* Geração de sorteios
+* Processamento de vitórias e derrotas
+* Histórico de apostas
+* Painel administrativo
+* Listagem de usuários no painel administrativo
+* Documentação da API com Swagger
+
+## Regras principais do sistema
+
+O sistema trabalha com 25 animais, cada um associado a 4 dezenas.
+
+Cada sorteio possui 5 rodadas:
+
+* Cabeça
+* Segunda
+* Terceira
+* Quarta
+* Quinta
+
+O resultado de cada rodada é formado por um número de 0 a 9999. Os dois últimos dígitos desse número definem o grupo/animal correspondente.
+
+As apostas podem considerar diferentes modalidades, como:
+
+* Grupo
+* Dezena
+* Centena
+* Milhar
+
+A carteira do usuário é atualizada de acordo com o resultado da aposta.
+
+## Segurança
+
+As senhas dos usuários são armazenadas de forma criptografada utilizando hash com BCrypt.
+
+A autenticação JWT está prevista como melhoria futura do projeto.
+
+## Como executar o projeto
+
+### Pré-requisitos
+
+Antes de iniciar, é necessário ter instalado:
+
+* Java 17 ou superior
+* Node.js
+* Angular CLI
+* MySQL
+* Maven ou Maven Wrapper
+
+## Back-end
+
+Acesse a pasta do back-end:
+
+```bash
+cd backend/app
+```
+
+Execute o projeto:
+
+```bash
+./mvnw spring-boot:run
+```
+
+No Windows PowerShell:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+A API será executada em:
+
+```text
+http://localhost:8080
+```
+
+## Front-end
+
+Acesse a pasta do front-end:
+
+```bash
+cd frontend
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Execute a aplicação:
+
+```bash
+npm start
+```
+
+O front-end será executado em:
+
+```text
+http://localhost:4200
+```
+
+## Documentação da API
+
+Com o back-end em execução, acesse:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+Também é possível acessar a especificação OpenAPI em:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+## Estrutura geral do projeto
+
+```text
+Full-Bicho/
+├── backend/
+│   └── app/
+│       ├── src/
+│       ├── pom.xml
+│       └── mvnw
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── angular.json
+│
+└── README.md
+```
+
+## Status do projeto
+
+Projeto em desenvolvimento acadêmico.
+
+Funcionalidades principais implementadas:
+
+* Back-end com Spring Boot
+* Front-end com Angular
+* Integração entre front-end e back-end
+* Cadastro e login de usuários
+* Sistema de apostas
+* Histórico de apostas
+* Painel administrativo
+* Documentação com Swagger
+* Hash de senhas com BCrypt
+
+Melhorias futuras:
+
+* Implementação completa de autenticação JWT
+* Proteção de rotas administrativas no back-end
+* Testes automatizados
+* Melhorias na interface administrativa
+* Tratamento global de exceções
+* Deploy da aplicação
+
+## Autor
+
+Projeto desenvolvido por Robert Marialva Cruz, acadêmico do curso de Engenharia de Software do Instituto Federal do Amazonas — Campus Parintins.
+
+## Licença
+
+Este projeto é de uso acadêmico e não possui finalidade comercial, tampouco incentiva prática de jogos de azar.

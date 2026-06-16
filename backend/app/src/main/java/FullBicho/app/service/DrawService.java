@@ -1,5 +1,12 @@
 package FullBicho.app.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import FullBicho.app.dto.DrawRequestDTO;
 import FullBicho.app.entity.Bet;
 import FullBicho.app.entity.Draw;
@@ -11,12 +18,6 @@ import FullBicho.app.repository.UserRepository;
 import FullBicho.app.util.items.BetStatus;
 import FullBicho.app.util.items.DrawStatus;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DrawService {
@@ -74,7 +75,7 @@ public class DrawService {
             Optional<Draw> tempDraw = drawRepository.findById(currentDrow_id);
 
             if (tempDraw.isEmpty()) {
-                throw new RuntimeException("Sorteio Não Encontrado!");
+                throw new RuntimeException("Sorteio não Encontrado!");
             }
 
             Draw  draw = tempDraw.get();
@@ -82,7 +83,7 @@ public class DrawService {
 
             //validar se OPEN------------
             if (!draw.isOpen()) {
-                throw new IllegalStateException("Sorteio Já Encerrado!");
+                throw new IllegalStateException("Sorteio já Encerrado!");
             }
 
 
@@ -101,14 +102,14 @@ public class DrawService {
             List<RoundDigit> results = roundDigitRepository.findByDraw_drawId(currentDrow_id);
 
             if (results.isEmpty()) {
-                throw new RuntimeException("ERRO AO GERAR RODADAS!!");
+                throw new RuntimeException("Erro ao gerar rodadas!!!");
             }
 
             //Buscar bets ----------------
             List<Bet> bets = betRepository.findByDraw_drawIdAndStatus(currentDrow_id, BetStatus.PENDING);
 
             if  (bets.isEmpty()) {
-                throw new RuntimeException("NENHUMA BET ALOCADA!!!!");
+                throw new RuntimeException("Nenhuma bet alocada!!!");
             }
             //PROCESSAR BETS ----------------
 
@@ -123,10 +124,26 @@ public class DrawService {
             drawRepository.save(draw);
 
 
-            return  "DRAW INICIADO E FINALIZADO!!!";
+            return  "Número gerado e sorteio fechado!!!";
 
     }
+    public List<Draw> findAllDraws() {
+        try {
+            return drawRepository.findAll();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
+    public Draw findDrawById(Long drawId) {
+        return drawRepository.findById(drawId)
+                .orElseThrow(() -> new RuntimeException("Sorteio não encontrado!"));
+    }
+
+    public List<RoundDigit> findRoundDigitsByDrawId(Long drawId) {
+        return roundDigitRepository.findByDraw_drawId(drawId);
+    }
 
 
 }

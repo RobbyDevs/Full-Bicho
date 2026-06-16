@@ -1,0 +1,69 @@
+<section class="stack-page">
+  <div class="hero-panel card-glass">
+    <div>
+      <span class="eyebrow">Histórico</span>
+      <h1>Suas apostas</h1>
+      
+    </div>
+    <button class="btn btn-outline-light" type="button" (click)="loadBets()" [disabled]="loading">
+      {{ loading ? 'Atualizando...' : 'Atualizar' }}
+    </button>
+  </div>
+
+  <div class="wallet-row">
+    <article class="metric-card">
+      <span>Total de apostas</span>
+      <strong>{{ stats.total }}</strong>
+    </article>
+    <article class="metric-card">
+      <span>Taxa de acerto</span>
+      <strong>{{ stats.winRate | number:'1.0-2' }}%</strong>
+    </article>
+    <article class="metric-card">
+      <span>Total ganho</span>
+      <strong>{{ stats.totalWon | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+    <article class="metric-card">
+      <span>Lucro</span>
+      <strong  style="color:#bbfbba;" [class.text-danger]="stats.profit < 0">{{ stats.profit | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+  </div>
+
+  <div class="wallet-row two">
+    <article class="metric-card">
+      <span>Total perdido</span>
+      <strong>{{ stats.totalLost | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+    <article class="metric-card">
+      <span>Total apostado</span>
+      <strong>{{ stats.totalStaked | currency:'BRL':'symbol':'1.2-2' }}</strong>
+    </article>
+  </div>
+
+  <section class="card-glass panel-block">
+    <div class="section-title">
+      <div>
+        <span class="eyebrow">Lista</span>
+        <h2>Todas as apostas</h2>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!bets.length && !loading">Nenhuma aposta encontrada.</div>
+
+    <div class="history-list" *ngIf="bets.length">
+      <article class="bet-row" *ngFor="let bet of bets; trackBy: trackBet">
+        <div>
+          <strong>{{ betLabel(bet) }}</strong>
+          <small>
+            {{ bet.createdAt | date:'dd/MM/yyyy, HH:mm' }} · apostado:
+            {{ bet.amount | currency:'BRL':'symbol':'1.2-2' }} · {{ resultLabel(bet) }}
+          </small>
+          <small *ngIf="bet.resultNumber">Resultado: {{ bet.resultNumber | number:'4.0-0' }} · {{ positionLabel(bet.digitPosition) }}</small>
+        </div>
+        <span class="status-pill" [ngClass]="statusClass(bet.status)">
+          {{ bet.status === 'WIN' ? 'Ganhou' : bet.status === 'LOSE' ? 'Perdeu' : 'Pendente' }}
+        </span>
+      </article>
+    </div>
+  </section>
+</section>

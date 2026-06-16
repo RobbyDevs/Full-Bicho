@@ -1,0 +1,30 @@
+<section class="stack-page narrow">
+  <div class="hero-panel card-glass">
+    <div>
+      <span class="eyebrow">Perfil</span>
+      <h1>Dados da conta</h1>
+      <p>Campos livres para alterações. Digite a senha e confirme.</p>
+    </div>
+  </div>
+
+  <form class="card-glass panel-block" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="alert" *ngIf="alert" [ngClass]="'alert-' + alert.type">{{ alert.message }}</div>
+
+    <label class="form-label">Nome</label>
+    <input class="form-control" formControlName="username">
+
+    <label class="form-label mt-3">Email</label>
+    <input class="form-control" type="email" formControlName="email">
+
+    <label class="form-label mt-3">CPF</label>
+    <input 
+      class="form-control cpf-readonly"formControlName="cpf"readonly>
+  
+    <label class="form-label mt-3">Digite sua Senha para confirmar alterações</label>
+    <input class="form-control" type="password" formControlName="password">
+
+    <button class="btn btn-primary mt-4" type="submit" [disabled]="loading">
+      {{ loading ? 'Salvando...' : 'Salvar alterações' }}
+    </button>
+  </form>
+</section>
