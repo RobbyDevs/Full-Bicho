@@ -1,8 +1,8 @@
 <section class="auth-card card-glass auth-card-wide">
   <div class="auth-copy">
-    <span class="eyebrow">Cadastro</span>
-    <h1>Crie sua carteira</h1>
-    <p>A carteira começa com saldo de R$ 1.000,00. O CPF aparece porque o backend exige esse campo no cadastro.</p>
+    <span class="eyebrow">FullBicho</span>
+    <h1>Criar conta</h1>
+    <p>Ganhe R$1000,00 de saldo se finalizar o cadastro agora mesmo!</p>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
@@ -10,21 +10,31 @@
 
     <label class="form-label">Nome completo</label>
     <input class="form-control" formControlName="username" placeholder="Seu nome">
+    <small class="field-error" *ngIf="form.controls.username.touched && form.controls.username.invalid">Nome inválido. Mínimo 3 caracteres.</small>
 
-    <label class="form-label mt-3">Email</label>
+
+    <label class="form-label mt-3">E-mail</label>
     <input class="form-control" type="email" formControlName="email" placeholder="voce@email.com">
+    <small class="field-error" *ngIf="form.controls.email.touched && form.controls.email.invalid">E-mail inválido.</small>
+
 
     <label class="form-label mt-3">CPF</label>
-    <input class="form-control" formControlName="cpf" placeholder="Somente números ou formatado">
+    <input class="form-control" formControlName="cpf" placeholder="Insira um CPF fictício">
+    <small class="field-error" *ngIf="form.controls.cpf.touched && form.controls.cpf.invalid">CPF inválido.</small>
+
 
     <div class="row g-3 mt-1">
       <div class="col-md-6">
         <label class="form-label">Senha</label>
         <input class="form-control" type="password" formControlName="password">
+        <small class="field-error" *ngIf="form.controls.password.touched && form.controls.password.invalid">Mínimo 4 caracteres.</small>
+
       </div>
       <div class="col-md-6">
         <label class="form-label">Confirmar senha</label>
         <input class="form-control" type="password" formControlName="confirmPassword">
+        <small class="field-error" *ngIf="form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid">Confirmação obrigatória.</small>
+
       </div>
     </div>
 
@@ -32,6 +42,6 @@
       {{ loading ? 'Cadastrando...' : 'Cadastrar' }}
     </button>
 
-    <p class="auth-link">Já tem conta? <a routerLink="/login">Entrar</a></p>
+    <p class="auth-link">Já tem conta? <a routerLink="/login">Login</a></p>
   </form>
 </section>

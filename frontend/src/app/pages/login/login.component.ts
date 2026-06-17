@@ -40,7 +40,7 @@ export class LoginComponent {
       },
       error: error => {
         this.loading = false;
-        this.error = error?.error?.message || error?.error || 'Não foi possível entrar. Confira email e senha.';
+        this.error = error?.error?.message || 'Credenciais inválidas!!';
       }
     });
   }

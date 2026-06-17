@@ -399,7 +399,7 @@ h1, h2, h3, p {
 .bet-summary {
   margin-top: 1rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 0, 102, 0.08);
   border: 1px solid var(--border);
   border-radius: 18px;
   display: grid;

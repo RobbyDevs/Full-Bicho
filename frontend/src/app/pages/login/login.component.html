@@ -1,15 +1,15 @@
 <section class="auth-card card-glass">
   <div class="auth-copy">
     <span class="eyebrow">Full Bicho</span>
-    <h1>Entre na sua conta</h1>
-    <p>Consulte carteira, faça apostas e acompanhe seu histórico em uma interface simples, escura e responsiva.</p>
+    <h1>Login</h1>
+    <p>Onde a diversão e a sorte se encontram. Jogue sem moderação.</p>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
     <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
 
-    <label class="form-label">Email</label>
-    <input class="form-control" type="email" formControlName="email" placeholder="voce@email.com">
+    <label class="form-label">E-mail</label>
+    <input class="form-control" type="email" formControlName="email" placeholder="fullbicho@gmail.com">
     <small class="field-error" *ngIf="form.controls.email.touched && form.controls.email.invalid">Informe um email válido.</small>
 
     <label class="form-label mt-3">Senha</label>
@@ -20,6 +20,6 @@
       {{ loading ? 'Entrando...' : 'Entrar' }}
     </button>
 
-    <p class="auth-link">Ainda não tem conta? <a routerLink="/register">Cadastre-se</a></p>
+    <p class="auth-link">Novo por aqui? <a routerLink="/register">Criar conta</a></p>
   </form>
 </section>
