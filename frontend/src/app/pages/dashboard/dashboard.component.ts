@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { forkJoin, of } from 'rxjs';
 import { Animal } from '../../core/models/animal.model';
 import { Bet, BetStats, BetType } from '../../core/models/bet.model';
 import { Draw, RoundDigit } from '../../core/models/draw.model';
@@ -34,23 +33,31 @@ export class DashboardComponent implements OnInit {
   readonly animals = this.animalService.animals;
   readonly betTypes: Array<{ value: BetType; label: string; helper: string }> = [
     { value: 'GROUP', label: 'Grupo', helper: 'Escolha um animal ou digite de 1 a 25.' },
-    { value: 'TENS', label: 'Dezena', helper: 'Digite de 00 a 99.' },
-    { value: 'HUNDREDS', label: 'Centena', helper: 'Digite de 000 a 999.' },
-    { value: 'THOUSANDS', label: 'Milhar', helper: 'Digite de 0000 a 9999.' }
+    { value: 'TENS', label: 'Dezena', helper: 'Digite de 00 a 99. ' },
+    { value: 'HUNDREDS', label: 'Centena', helper: 'Digite de 000 a 999. ' },
+    { value: 'THOUSANDS', label: 'Milhar', helper: 'Digite de 0000 a 9999. ' }
   ];
 
   user: User | null = null;
   activeDraw: Draw | null = null;
+  latestDraw: Draw | null = null;
+
   selectedAnimal: Animal | null = null;
   bets: Bet[] = [];
   stats: BetStats = this.betService.calculateStats([]);
   resultDigits: RoundDigit[] = [];
   resultBet: Bet | null = null;
+
+  draws: Draw[] = [];
+  selectedDrawId: number | null = null;
+  loadingDraws = false;
+
+
+
   alert: DashboardAlert | null = null;
   loading = false;
   creatingDraw = false;
   placingBet = false;
-  startingDraw = false;
   showConfirmation = false;
   showResult = false;
 
@@ -63,14 +70,43 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.auth.currentUser;
-    this.activeDraw = this.drawService.readActiveDraw();
     this.form.controls.type.valueChanges.subscribe(() => this.adjustChosenNumber());
     this.loadDashboard();
+    this.loadLatestDraw();
 
-    if (!this.activeDraw || this.activeDraw.status !== 'OPEN') {
-      this.createNewDraw(false);
-    }
+
   }
+
+  private getLatestDraw(draws: Draw[]): Draw | null {
+  if (!draws.length) {
+    return null;
+  }
+
+  return [...draws].sort((a, b) => {
+    const idA = a.drawId || 0;
+    const idB = b.drawId || 0;
+
+    return idB - idA;
+  })[0];
+}
+
+
+  private loadLatestDraw(): void {
+  this.drawService.findAllDraws().subscribe({
+    next: draws => {
+      const latest = this.getLatestDraw(draws);
+
+      this.latestDraw = latest;
+      this.activeDraw = latest?.status === 'OPEN' ? latest : null;
+    },
+    error: () => {
+      this.latestDraw = null;
+      this.activeDraw = null;
+    }
+  });
+}
+
+  
 
   selectAnimal(animal: Animal): void {
     this.selectedAnimal = animal;
@@ -80,6 +116,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  closeAlert(): void {
+  this.alert = null;
+}
+
+
   openConfirmation(): void {
     this.alert = null;
 
@@ -88,8 +129,8 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    if (!this.activeDraw) {
-      this.alert = { type: 'warning', message: 'Nenhum sorteio aberto. Gere um novo sorteio antes de apostar.' };
+    if (!this.latestDraw) {
+      this.alert = { type: 'warning', message: 'Nenhum sorteio cadastrado no sistema.' };
       return;
     }
 
@@ -107,8 +148,10 @@ export class DashboardComponent implements OnInit {
     this.showConfirmation = true;
   }
 
+  
+
   placeBet(): void {
-    if (!this.user || !this.activeDraw || this.form.invalid) {
+    if (!this.user || !this.latestDraw || this.form.invalid) {
       return;
     }
 
@@ -118,7 +161,7 @@ export class DashboardComponent implements OnInit {
 
     this.betService.placeBet({
       userId: this.user.userId,
-      drawId: this.activeDraw.drawId,
+      drawId: this.latestDraw.drawId,
       type: payload.type || 'GROUP',
       chosenNumber: Number(payload.chosenNumber),
       amount: Number(payload.amount)
@@ -137,67 +180,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  startDraw(): void {
-    if (!this.activeDraw) {
-      this.alert = { type: 'warning', message: 'Não há sorteio aberto para finalizar.' };
-      return;
-    }
-
-    const drawId = this.activeDraw.drawId;
-    this.startingDraw = true;
-    this.alert = null;
-
-    this.drawService.startDraw(drawId).subscribe({
-      next: () => {
-        forkJoin({
-          digits: this.drawService.findRoundDigitsByDrawId(drawId),
-          bets: this.user ? this.betService.findByUserId(this.user.userId) : of([] as Bet[])
-        }).subscribe(({ digits, bets }) => {
-          this.startingDraw = false;
-          this.resultDigits = digits;
-          this.bets = bets;
-          this.stats = this.betService.calculateStats(bets);
-          this.resultBet = this.findLatestBetFromDraw(drawId, bets);
-          this.showResult = true;
-          this.drawService.clearActiveDraw();
-          this.activeDraw = null;
-          this.loadUser();
-        });
-      },
-      error: error => {
-        this.startingDraw = false;
-        this.alert = { type: 'danger', message: error?.error || 'Não foi possível finalizar o sorteio.' };
-      }
-    });
-  }
-
-  createNewDraw(showAlert = true): void {
-    this.creatingDraw = true;
-    this.drawService.autoGenerateDraw().subscribe({
-      next: draw => {
-        this.creatingDraw = false;
-        this.activeDraw = draw;
-        this.resultDigits = [];
-        this.resultBet = null;
-        this.drawService.saveActiveDraw(draw);
-
-        if (showAlert) {
-          this.alert = { type: 'success', message: `Sorteio #${draw.drawId} aberto para novas apostas.` };
-        }
-      },
-      error: () => {
-        this.creatingDraw = false;
-        this.alert = { type: 'danger', message: 'Não foi possível gerar um novo sorteio.' };
-      }
-    });
-  }
 
   closeConfirmation(): void {
     this.showConfirmation = false;
-  }
-
-  closeResult(): void {
-    this.showResult = false;
   }
 
   selectedTypeLabel(): string {
@@ -330,9 +315,6 @@ export class DashboardComponent implements OnInit {
     return number <= limits[type];
   }
 
-  private findLatestBetFromDraw(drawId: number, bets: Bet[]): Bet | null {
-    return this.sortBets(bets).find(bet => bet.drawId === drawId) || null;
-  }
 
   private sortBets(bets: Bet[]): Bet[] {
     return [...bets].sort((a, b) => {

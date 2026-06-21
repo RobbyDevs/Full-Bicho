@@ -10,9 +10,6 @@
       <small>Sorteio atual</small>
       <strong *ngIf="activeDraw; else noDraw">#{{ activeDraw.drawId }}</strong>
       <ng-template #noDraw><strong>Nenhum</strong></ng-template>
-      <button class="btn btn-sm btn-primary" type="button" (click)="createNewDraw()" [disabled]="creatingDraw">
-        {{ creatingDraw ? 'Gerando...' : 'Novo sorteio' }}
-      </button>
     </div>
   </div>
 
@@ -37,7 +34,30 @@
     </article>
   </div>
 
-  <div class="alert" *ngIf="alert" [ngClass]="'alert-' + alert.type">{{ alert.message }}</div>
+<div class="modal-backdrop-custom" *ngIf="alert">
+  <div class="modal-card card-glass feedback-modal">
+    <span class="eyebrow">
+      {{ alert.type === 'success' ? 'Sucesso' : 'Aviso' }}
+    </span>
+
+    <h2>
+      {{ alert.type === 'success' ? 'Tudo certo!' : 'OPA!' }}
+    </h2>
+
+    <p>{{ alert.message }}</p>
+
+    <div class="modal-actions">
+      <button 
+        class="btn btn-primary" 
+        type="button" 
+        (click)="closeAlert()"
+      >
+        Entendi
+      </button>
+    </div>
+  </div>
+</div>
+
 
   <div class="content-split">
     <section class="card-glass panel-block">
@@ -79,12 +99,12 @@
         <small class="form-text">{{ selectedTypeHelper() }}</small>
 
         <label class="form-label mt-3">Número da aposta</label>
-        <input class="form-control" type="number" formControlName="chosenNumber" placeholder="Digite ou selecione no grid">
+        <input class="form-control" type="number" formControlName="chosenNumber" placeholder="Digite ou selecione na tabela" formaction="">
         <small class="field-error" *ngIf="form.controls.chosenNumber.touched && form.controls.chosenNumber.invalid">
           Número incompatível com o tipo de jogo.
         </small>
 
-        <label class="form-label mt-3">Valor</label>
+        <label class="form-label mt-3">Valor (R$)</label>
         <input class="form-control" type="number" formControlName="amount" min="1" step="0.01" placeholder="R$ 10,00">
 
         <div class="bet-summary">
@@ -93,14 +113,10 @@
           <small>{{ form.controls.amount.value || 0 | currency:'BRL':'symbol':'1.2-2' }}</small>
         </div>
 
-        <button class="btn btn-primary w-100 mt-3" type="submit" [disabled]="placingBet || !activeDraw">
+        <button class="btn btn-primary w-100 mt-4" type="submit" [disabled]="placingBet || !activeDraw">
           Confirmar aposta
         </button>
       </form>
-
-      <button class="btn btn-outline-light w-100 mt-3" type="button" (click)="startDraw()" [disabled]="startingDraw || !activeDraw">
-        {{ startingDraw ? 'Gerando resultado...' : 'Gerar número e finalizar sorteio' }}
-      </button>
     </aside>
   </div>
 
@@ -138,7 +154,7 @@
       <div><span>Jogo</span><strong>{{ selectedTypeLabel() }}</strong></div>
       <div><span>Número</span><strong>{{ chosenDisplay() }}</strong></div>
       <div><span>Valor</span><strong>{{ form.controls.amount.value || 0 | currency:'BRL':'symbol':'1.2-2' }}</strong></div>
-      <div><span>Sorteio</span><strong>#{{ activeDraw?.drawId }}</strong></div>
+      <div><span>Sorteio</span><strong>#{{ latestDraw?.drawId }} · {{ latestDraw?.status }}</strong></div>
     </div>
 
     <div class="modal-actions">
